@@ -1,4 +1,4 @@
-PROJECT=backoff
+PROJECT=retry-strategies-go
 
 .SILENT: clean
 

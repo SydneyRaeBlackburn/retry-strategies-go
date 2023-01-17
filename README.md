@@ -1,6 +1,6 @@
-# Backoff
+# Retry Strategies
 
-This package allows a service to retry an external api call based on the chosen backoff strategy. 
+This package allows an api call to be retried based on the chosen backoff strategy. 
 
 ## Backoff Strategies
 
@@ -8,9 +8,6 @@ This package allows a service to retry an external api call based on the chosen 
 `wait_duration = intial_delay_interval * scaling_factor^(attempt) + jitter`
 
 ```go
-// example usage
-import b "backoff"
-
 // can be reused
 eb := b.NewExponentialBackoff(b.ExponentialBackoff{
     //InitialInterval: 250 * time.Millisecond,
@@ -19,23 +16,26 @@ eb := b.NewExponentialBackoff(b.ExponentialBackoff{
     //ScalingFactor: 1,
 })
 
+// declare outside Retry() for scope
 var tf *tfexec.Terraform
 var stdErr error
 
 // top level error will return a failure on retry i.e maxAttempts/maxInterval reached
 err := eb.Retry(func() interface{} {
-    // stdErr returns errors from external api call 
+    // stdErr returns errors from the external api call 
     // this error is checked in Retry()
     // if nil, will break retry loop; else, log error and continue
     tf, stdErr = s.init(ctx.GetContext(), logger, req.GetResourceId(), tfFolder)
     return stdErr
 })
 if err != nil {
-    return logger.WrapError(err)
+    return err
 }
 
 // do something with tf
 ```
 
 ## TODO
-- implement other strategies (constant, linear, fibonacci, quadratic, polunomial, etc.)
+- Implement other strategies (constant, linear, fibonacci, quadratic, polunomial, etc.)
+- Unit tests
+- Better Documentation

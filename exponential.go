@@ -1,4 +1,4 @@
-package backoff
+package retry
 
 import (
 	"errors"
@@ -69,10 +69,10 @@ func (b *ExponentialBackoff) nextBackoff() time.Duration {
 	// this prevents successive collision
 	jitter := time.Duration(1000-rand.Intn(2000)) * time.Millisecond
 	return time.Duration(
-		b.InitialInterval.Seconds() * math.Pow(
+		b.InitialInterval.Seconds()*math.Pow(
 			float64(b.ScalingFactor),
 			float64(b.currentAttempt),
-	)) * time.Second + jitter
+		))*time.Second + jitter
 }
 
 // Reset will set the backoff values back to the defaults
