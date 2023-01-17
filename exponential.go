@@ -117,7 +117,7 @@ func (b *ExponentialBackoff) Retry(f func() interface{}) error {
 			b.reset() // reset backoff for next use
 			return nil
 		case <-time.After(b.MaxInterval):
-			err := errors.New("retry max interval reached")
+			err := errors.New("max retry interval reached")
 			// logger.Error(err)
 			b.reset() // reset backoff for next use
 			return err

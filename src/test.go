@@ -11,11 +11,12 @@ import (
 var num = 0
 
 func main() {
+	fmt.Println("HAPPY PATH WITH TIMES")
 	// DECLARE NEW BACKOFF
 	eb := retry.NewExponentialBackoff(retry.ExponentialBackoff{
 		//InitialInterval: 250 * time.Millisecond,
 		//MaxInterval: 10 * time.Second,
-		MaxAttempts: 10, // uncomment to fail on maxAttempts
+		MaxAttempts: 10, // comment out to fail on maxAttempts
 		//ScalingFactor: 1,
 	})
 
@@ -32,16 +33,15 @@ func main() {
 	if err != nil {
 		fmt.Println(err)               // will be an error from the retry i.e maxAttempts/maxInterval reached
 		fmt.Println(time.Since(start)) // for testing
-		return
 	}
 
 	// DO SOMETHING WITH RETURN VALUES IF YOU HAVE THEM
 	fmt.Println(v)
-	fmt.Println(time.Since(start))
 
 	// reset
 	num = 0
 	fmt.Println("---------------------")
+	fmt.Println("REUSE EXAMPLE")
 
 	// CAN USE OLD BACKOFF WITH SAME DEFAULTS
 	err = eb.Retry(func() interface{} {
@@ -50,12 +50,12 @@ func main() {
 	})
 	if err != nil {
 		fmt.Println(err)
-		return
 	}
 
 	// reset
 	num = 0
 	fmt.Println("---------------------")
+	fmt.Println("MAX ATTEMPTS FAILURE EXAMPLE")
 
 	// OR LESS CODE WITH NEW INIT
 	err = retry.NewExponentialBackoff(retry.ExponentialBackoff{}).Retry(func() interface{} {
@@ -64,7 +64,22 @@ func main() {
 	})
 	if err != nil {
 		fmt.Println(err)
-		return
+	}
+
+	// reset
+	num = 0
+	fmt.Println("---------------------")
+	fmt.Println("MAX INTERVAL FAILURE EXAMPLE")
+
+	err = retry.NewExponentialBackoff(retry.ExponentialBackoff{
+		MaxInterval: 10 * time.Second,
+		MaxAttempts: 10,
+	}).Retry(func() interface{} {
+		stdErr = countNoReturn(num)
+		return stdErr
+	})
+	if err != nil {
+		fmt.Println(err)
 	}
 }
 
