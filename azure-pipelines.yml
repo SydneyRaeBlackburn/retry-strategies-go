@@ -1,0 +1,51 @@
+parameters:
+  - name: goVersion
+    type: string
+    default: '1.17'
+  - name: projectName
+    type: string
+    default: 'pkg/backoff'
+  - name: sonarqubeProjectKey
+    type: string
+    default: 'galactus:backoff'
+  - name: sonarqubeProjectName
+    type: string
+    default: 'Galactus-Backoff'
+  - name: version
+    type: string
+    default: 'v2.0.$(Build.BuildId)'
+  - name: workingDirectory
+    type: string
+    default: 'galactus/pkg/backoff'
+
+trigger:
+  branches:
+    include:
+      - master
+  paths:
+    include:
+      - pkg/backoff
+
+variables:
+  - group: 'Versioning-Backoff'
+
+pr:
+  branches:
+    include:
+      - master
+
+resources:
+  repositories:
+    - repository: phoenix # The name used to reference this repository in the checkout step
+      type: git
+      name: Commercial/phoenix
+      ref: refs/tags/0.1.181
+
+stages:
+  - template: pipelines/build/go_modules/go-module-CI.yaml@phoenix
+    parameters:
+      goVersion: '${{ parameters.goVersion }}'
+      workingDirectory: '${{ parameters.workingDirectory }}'
+      projectName: '${{ parameters.projectName }}'
+      sonarqubeProjectKey: '${{ parameters.sonarqubeProjectKey }}'
+      sonarqubeProjectName: '${{ parameters.sonarqubeProjectName }}'
