@@ -85,16 +85,16 @@ func (b *ExponentialBackoff) reset() {
 }
 
 // Retry will continuously execute a given function over an increasing amount of time
+//
 //	until a max interval or max amount of attempts has been reached,
 //	or a successful call has been achieved
-// 	ex. with a maxInterval of 60s, if the next backoff interval is > 60s then an err will return
+//	ex. with a maxInterval of 60s, if the next backoff interval is > 60s then an err will return
 func (b *ExponentialBackoff) Retry(f func() interface{}) error {
 	for {
 		// increment and check if maxAttempts have been reached
 		b.currentAttempt++
 		if b.currentAttempt > b.MaxAttempts {
 			err := errors.New("max retry attempts reached")
-			// logger.Error(err)
 			b.reset() // reset backoff for next use
 			return err
 		}
@@ -108,7 +108,6 @@ func (b *ExponentialBackoff) Retry(f func() interface{}) error {
 			// retry function call after wait time has elapsed
 			err := f()
 			if err != nil {
-				// logger.WithError(err).Error("error from external api call.. retrying after next interval")
 				fmt.Println(err, "..retrying after next interval")
 				continue
 			}
@@ -118,7 +117,6 @@ func (b *ExponentialBackoff) Retry(f func() interface{}) error {
 			return nil
 		case <-time.After(b.MaxInterval):
 			err := errors.New("max retry interval reached")
-			// logger.Error(err)
 			b.reset() // reset backoff for next use
 			return err
 		}
