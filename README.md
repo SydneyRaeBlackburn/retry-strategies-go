@@ -4,7 +4,23 @@ This package allows an api call to be retried based on the chosen backoff strate
 
 ## Backoff Strategies
 
-### Exponential with Jitter
+### Constant
+`wait_duration = constant + jitter`
+
+- TODO
+
+### Linear
+`wait_duration = last_duration + delta + jitter`
+
+- TODO
+
+### Fibonacci
+- TODO
+
+### Quadratic
+- TODO
+
+### Exponential
 `wait_duration = intial_delay_interval * scaling_factor^(attempt) + jitter`
 
 ```go
@@ -35,7 +51,14 @@ if err != nil {
 // do something with tf
 ```
 
+### Polynomial
+- TODO
+
+## Jitter
+- TODO
+
 ## TODO
-- Implement other strategies (constant, linear, fibonacci, quadratic, polunomial, etc.)
+- Implement other strategies (linear, fibonacci, quadratic, polunomial, etc.)
 - Unit tests
 - Better Documentation
+    - Use cases, example
